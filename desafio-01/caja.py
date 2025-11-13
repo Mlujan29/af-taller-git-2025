@@ -4,8 +4,19 @@
 
 #       FUNCIONES
 def alta(cod,descripcion,precio,productos):
-    productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
-    print(f"OK: ALTA {cod} - {descripcion}")
+    if cod in productos:                        #si el codigo ya existe (ya que debe de ser único)
+        print("ALERTA: El codigo ya existía ¿Desea sobrescribirlo?")
+        confirmación = input("[S/N]: ")         #guarda la respuesta
+        if confirmación.upper() == 'S' or confirmación.upper() == "SI":
+            productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
+            print(f"OK: ALTA {cod} - {descripcion}")
+        elif confirmación.upper() == 'N' or confirmación.upper() == "NO":       #si dice que no vuelve al comienzo
+            return
+        else:                   #si ingresa cualquier otra cosa
+            print("ERROR: La confirmación no fue válida")
+    else:
+        productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
+        print(f"OK: ALTA {cod} - {descripcion}")
 
 
 def stock(cod, cantidad, productos):
@@ -45,7 +56,7 @@ def devuelve(cod, cantidad, productos, movimientos):
 
 def reporte(movimientos, productos):
     print("--------------------------------------------------")
-    print(f"{"CODIGO":<10} {"DESCRIPCION":<15} {"PRECIO":>10} {"STOCK":>7}")
+    print(f"{'CODIGO':<10} {'DESCRIPCION':<15} {'PRECIO':>10} {'STOCK':>7}")        #correción con comillas simples
     print("--------------------------------------------------")
     total = 0
     for codigo, item in productos.items():      #va a recorrer todos los productos que se dieron alta
