@@ -5,7 +5,7 @@
 #       FUNCIONES
 def alta(cod,descripcion,precio,productos):
     if cod in productos:                        #si el codigo ya existe (ya que debe de ser único)
-        print("ALERTA: El codigo ya existía ¿Desea sobrescribirlo?")
+        print("ALERTA: El codigo ya existía ¿Desea sobrescribirlo? El Stock volverá a cero")
         confirmación = input("[S/N]: ")         #guarda la respuesta
         if confirmación.upper() == 'S' or confirmación.upper() == "SI":
             productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
