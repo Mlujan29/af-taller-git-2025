@@ -79,6 +79,42 @@ def devuelve(cod,cantidad,productos,movimientos):
     else:
         print("ERROR: El código ingresado no existe")
 
+def reporte(productos,movimientos):
+    # Para mostrar el inventario
+    print("----------------------------REPORTE GENERAL----------------------------")
+    if productos:
+        print("\n--------------------  INVENTARIO --------------------")
+        for item in productos:
+            print(f"- {item} : {productos[item]}")
+        print("-----------------------------------------------------")
+    else:
+        print("No existe inventario")
+    
+    #  Para mostrar los totales
+    total_bruto = 0
+    total_descuentos = 0
+    total_devoluciones = 0
+    ventas = {}
+
+    for mov in movimientos:
+        if mov['Tipo'] == 'VENTA':
+            total_bruto += mov['Bruto']
+            total_descuentos += mov['Descuento']
+
+        elif mov['Tipo'] == 'DEVOLUCION':
+            total_devoluciones += mov['Monto']
+
+    monto_neto = total_bruto - total_descuentos - total_devoluciones
+
+    print("\nTOTALES:")
+    print(f"Ventas Brutas:   {total_bruto:>10} Gs")
+    print(f"Descuentos:      {total_descuentos:>10} Gs")
+    print(f"Devoluciones:    {total_devoluciones:>10} Gs")
+    print("---------------------------------")
+    print(f"MONTO NETO:      {monto_neto:>10} Gs")
+
+    print("\n--- FIN REPORTE ---")
+
 
 #   MAIN
 productos =  {}     # Donde se van a almacenar los productos
@@ -184,7 +220,7 @@ while True:
                 promos_activas()
 
             case "REPORTE":
-                print("la funcion")
+                reporte(productos, movimientos)
 
             case "FIN":                            # cierra el programa
                 print("Gracias por usar el programa! Adiós...")
