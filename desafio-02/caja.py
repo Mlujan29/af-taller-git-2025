@@ -1,3 +1,5 @@
+import promos       # Da acceso a las funciones del archivo
+
 #       FUNCIONES
 def alta(cod,descripcion,precio,productos):
     if cod in productos:                        #si el codigo ya existe (ya que debe de ser único)
@@ -33,10 +35,44 @@ def promos_activas():               # muestra las promociones
     3) Descuento de 1000 Gs en venta conjunta de galleta y cafe""")
 
 
+def vende(cod, cantidad, productos, carrito):
+    if cod in productos:
+        cant_total = carrito.get(cod, 0) + cantidad
+        if cant_total <= productos[cod]["stock"]:
+            print(f"OK: VENDE {cod} --> {cantidad}")
+            carrito[cod] = cant_total
+
+        else:
+            print("ERROR: No hay suficiente stock para la venta.")
+            print(f"Disponible: {productos[cod]["stock"]}")
+    else:
+        print("ERROR: El código ingresado no existe")
+
+
+def cobrar(productos,promociones,movimientos,carrito):
+    if carrito:
+        items_de_venta = list(carrito.items())
+        bruto_venta = 0
+        for (cod,cantidad) in items_de_venta:
+            bruto_venta += productos[cod]['precio'] * cantidad
+        
+        descuento = promos.calcular_descuento(items_de_venta,productos,promociones)
+        total = bruto_venta - descuento
+
+        for (cod, cantidad) in items_de_venta:
+            productos[cod]['stock'] -= cantidad
+        
+        movimientos.append({"Tipo": "VENTA", "Cod": cod, "Cantidad": cantidad, "Bruto": bruto_venta, "Descuento": descuento, "Total": total})
+        
+    else:
+        print("ERROR: No se ha vendido nada")
+
+        
+
 #   MAIN
 productos =  {}     # Donde se van a almacenar los productos
 
-PROMOCIONES = [                     # Definición de las promociones
+promociones = [                     # Definición de las promociones
     {
         'tipo': '3x2', 
         'producto': 'chicle'
@@ -53,6 +89,8 @@ PROMOCIONES = [                     # Definición de las promociones
     }
 ]
 
+
+carrito = {}    #para los productos que se venden
 movimientos = []                # Registra los movimientos
 
 while True:
@@ -94,7 +132,25 @@ while True:
                     print("ERROR: Ingrese el formato correcto para dar stock al producto")
 
             case "VENDE":
-                print("la funcion")
+                if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
+                    cod = partes[1]
+
+                    try:
+                        cantidad = int(partes[2])
+                        if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
+                            print("ERROR: Ingrese una cantidad válida")
+                        else:
+                            print("Para terminar ingrese: COBRAR")
+                            vende(cod,cantidad,productos,carrito)
+                    except ValueError:
+                        print("ERROR: La cantidad debe de ser un número")
+
+                else:
+                    print("ERROR: Ingrese el formato correcto para vender el producto")
+            
+            case "COBRAR":
+                cobrar(productos,promociones,movimientos,carrito)
+                carrito.clear()
 
             case "DEVUELVE":
                 print("la funcion")
