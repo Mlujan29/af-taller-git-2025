@@ -62,7 +62,8 @@ def cobrar(productos,promociones,movimientos,carrito):
         for (cod, cantidad) in items_de_venta:
             productos[cod]['stock'] -= cantidad
         
-        movimientos.append({"Tipo": "VENTA", "Cod": cod, "Cantidad": cantidad, "Bruto": bruto_venta, "Descuento": descuento, "Total": total})
+        print("La venta fue realizada con exito!")
+        movimientos.append({"Tipo": "VENTA", "items": items_de_venta, "Cantidad": cantidad, "Bruto": bruto_venta, "Descuento": descuento, "Total": total})
         
     else:
         print("ERROR: No se ha vendido nada")
@@ -101,6 +102,12 @@ def reporte(productos,movimientos):
             total_bruto += mov['Bruto']
             total_descuentos += mov['Descuento']
 
+            for codigo, cantidad in mov['items']:
+                if codigo in ventas:
+                    ventas[codigo] += cantidad
+                else:
+                    ventas[codigo] = cantidad
+
         elif mov['Tipo'] == 'DEVOLUCION':
             total_devoluciones += mov['Monto']
 
@@ -113,6 +120,19 @@ def reporte(productos,movimientos):
     print("---------------------------------")
     print(f"MONTO NETO:      {monto_neto:>10} Gs")
 
+    #   Para el top 3
+    lista_invertida = []
+    for (codigo, cantidad) in ventas.items():
+        lista_invertida.append((cantidad,codigo))
+    lista_invertida.sort(reverse= True)
+
+    top3 = lista_invertida[:3]
+
+    if top3:
+        print(f"\nLos 3 productos más vendidos son:")
+        for i, (cantidad, codigo) in enumerate(top3):
+            print(f"Top {i+1}: {codigo} - {cantidad} unidades")
+    
     print("\n--- FIN REPORTE ---")
 
 
