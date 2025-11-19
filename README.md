@@ -6,3 +6,4 @@ Taller con el Profe Ale
 
 ## Contiene:
 Desafio 1: caja.py
+Desafío 2: caja.py, promos.py
